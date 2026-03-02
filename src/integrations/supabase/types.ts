@@ -14,7 +14,120 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      analyses: {
+        Row: {
+          audio_visual_detail: string | null
+          audio_visual_pass: boolean | null
+          audio_visual_score: number | null
+          created_at: string
+          eye_reflection_detail: string | null
+          eye_reflection_pass: boolean | null
+          eye_reflection_score: number | null
+          facial_artifact_detail: string | null
+          facial_artifact_pass: boolean | null
+          facial_artifact_score: number | null
+          file_name: string
+          file_type: string
+          file_url: string | null
+          frequency_domain_detail: string | null
+          frequency_domain_pass: boolean | null
+          frequency_domain_score: number | null
+          id: string
+          overall_score: number | null
+          physiological_detail: string | null
+          physiological_pass: boolean | null
+          physiological_score: number | null
+          risk_level: string | null
+          temporal_consistency_detail: string | null
+          temporal_consistency_pass: boolean | null
+          temporal_consistency_score: number | null
+          user_id: string
+        }
+        Insert: {
+          audio_visual_detail?: string | null
+          audio_visual_pass?: boolean | null
+          audio_visual_score?: number | null
+          created_at?: string
+          eye_reflection_detail?: string | null
+          eye_reflection_pass?: boolean | null
+          eye_reflection_score?: number | null
+          facial_artifact_detail?: string | null
+          facial_artifact_pass?: boolean | null
+          facial_artifact_score?: number | null
+          file_name: string
+          file_type: string
+          file_url?: string | null
+          frequency_domain_detail?: string | null
+          frequency_domain_pass?: boolean | null
+          frequency_domain_score?: number | null
+          id?: string
+          overall_score?: number | null
+          physiological_detail?: string | null
+          physiological_pass?: boolean | null
+          physiological_score?: number | null
+          risk_level?: string | null
+          temporal_consistency_detail?: string | null
+          temporal_consistency_pass?: boolean | null
+          temporal_consistency_score?: number | null
+          user_id: string
+        }
+        Update: {
+          audio_visual_detail?: string | null
+          audio_visual_pass?: boolean | null
+          audio_visual_score?: number | null
+          created_at?: string
+          eye_reflection_detail?: string | null
+          eye_reflection_pass?: boolean | null
+          eye_reflection_score?: number | null
+          facial_artifact_detail?: string | null
+          facial_artifact_pass?: boolean | null
+          facial_artifact_score?: number | null
+          file_name?: string
+          file_type?: string
+          file_url?: string | null
+          frequency_domain_detail?: string | null
+          frequency_domain_pass?: boolean | null
+          frequency_domain_score?: number | null
+          id?: string
+          overall_score?: number | null
+          physiological_detail?: string | null
+          physiological_pass?: boolean | null
+          physiological_score?: number | null
+          risk_level?: string | null
+          temporal_consistency_detail?: string | null
+          temporal_consistency_pass?: boolean | null
+          temporal_consistency_score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
