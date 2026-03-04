@@ -1,8 +1,11 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Shield, Eye, Brain, AudioLines, BarChart3, Timer, Upload, Search, FileCheck, ArrowRight, Zap, Users, ScanLine, ChevronDown, Sparkles, Lock } from "lucide-react";
+import { Shield, Eye, Brain, AudioLines, BarChart3, Timer, Upload, Search, FileCheck, ArrowRight, Zap, Users, ScanLine, ChevronDown, Sparkles, Lock, Star, Quote } from "lucide-react";
 import { useRef } from "react";
+import heroFaceScan from "@/assets/hero-face-scan.jpg";
+import aiNetworkBg from "@/assets/ai-network-bg.jpg";
+import forensicsSplit from "@/assets/forensics-split.jpg";
 
 const features = [
   { icon: Eye, title: "Eye Reflection Analysis", desc: "Detects mismatched or missing reflections in eyes — a hallmark of AI-generated faces.", color: "from-cyan-400/20 to-blue-500/20", border: "hover:border-cyan-500/40" },
@@ -24,6 +27,33 @@ const stats = [
   { value: "99.2%", label: "Detection Accuracy" },
   { value: "6", label: "Analysis Modules" },
   { value: "<30s", label: "Avg Analysis Time" },
+];
+
+const testimonials = [
+  {
+    name: "Dr. Sarah Chen",
+    role: "Digital Forensics Lead, Reuters",
+    quote: "DeepFake-X has become an essential part of our verification pipeline. The multi-module approach catches things single-model detectors miss entirely.",
+    rating: 5,
+  },
+  {
+    name: "Marcus Johnson",
+    role: "Cybersecurity Researcher, MIT",
+    quote: "The frequency domain analysis and eye reflection modules are remarkably sophisticated. This is the most comprehensive deepfake detection tool I've tested.",
+    rating: 5,
+  },
+  {
+    name: "Elena Rodriguez",
+    role: "Investigative Journalist, AP News",
+    quote: "In an era of information warfare, tools like this are critical. I've used it to verify sources on multiple breaking stories. Fast, accurate, indispensable.",
+    rating: 5,
+  },
+  {
+    name: "James Liu",
+    role: "Trust & Safety Director, TechCorp",
+    quote: "We integrated DeepFake-X into our content moderation workflow. It reduced deepfake slip-throughs by 94% in the first month alone.",
+    rating: 5,
+  },
 ];
 
 const Index = () => {
@@ -49,6 +79,7 @@ const Index = () => {
           <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
             <a href="#features" className="hover:text-foreground transition-colors duration-300">Features</a>
             <a href="#how-it-works" className="hover:text-foreground transition-colors duration-300">How It Works</a>
+            <a href="#testimonials" className="hover:text-foreground transition-colors duration-300">Testimonials</a>
             <Link to="/auth" className="hover:text-foreground transition-colors duration-300">Log In</Link>
             <Button asChild size="sm" className="font-display text-xs tracking-wider glow-primary">
               <Link to="/auth?mode=signup">Get Started</Link>
@@ -60,39 +91,35 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero */}
+      {/* Hero with background image */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center">
-        {/* Animated background */}
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Radial gradient orbs */}
+        {/* Hero background image */}
+        <div className="absolute inset-0">
+          <img
+            src={heroFaceScan}
+            alt="AI facial scan analysis"
+            className="w-full h-full object-cover"
+          />
+          {/* Dark overlay for readability */}
+          <div className="absolute inset-0 bg-background/80" />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" />
+        </div>
+
+        {/* Animated orbs on top */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
             className="absolute top-1/3 left-1/4 w-[600px] h-[600px] rounded-full"
-            style={{
-              background: "radial-gradient(circle, hsl(185 80% 50% / 0.12) 0%, transparent 70%)",
-            }}
+            style={{ background: "radial-gradient(circle, hsl(185 80% 50% / 0.08) 0%, transparent 70%)" }}
             animate={{ scale: [1, 1.2, 1], x: [0, 30, 0], y: [0, -20, 0] }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
             className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full"
-            style={{
-              background: "radial-gradient(circle, hsl(270 60% 55% / 0.10) 0%, transparent 70%)",
-            }}
+            style={{ background: "radial-gradient(circle, hsl(270 60% 55% / 0.08) 0%, transparent 70%)" }}
             animate={{ scale: [1.1, 1, 1.1], x: [0, -20, 0], y: [0, 30, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           />
-          {/* Grid pattern */}
-          <div
-            className="absolute inset-0 opacity-[0.04]"
-            style={{
-              backgroundImage: "linear-gradient(hsl(185 80% 50%) 1px, transparent 1px), linear-gradient(90deg, hsl(185 80% 50%) 1px, transparent 1px)",
-              backgroundSize: "80px 80px",
-            }}
-          />
-          {/* Radial vignette */}
-          <div className="absolute inset-0" style={{
-            background: "radial-gradient(ellipse at center, transparent 40%, hsl(var(--background)) 100%)",
-          }} />
         </div>
 
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="container mx-auto px-4 relative z-10">
@@ -157,12 +184,12 @@ const Index = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.6 }}
-              className="flex items-center justify-center gap-6 mt-12 text-xs text-muted-foreground"
+              className="flex flex-wrap items-center justify-center gap-6 mt-12 text-xs text-muted-foreground"
             >
               <span className="flex items-center gap-1.5"><Lock className="h-3 w-3 text-primary" /> End-to-end encrypted</span>
-              <span className="w-1 h-1 rounded-full bg-border" />
+              <span className="hidden sm:block w-1 h-1 rounded-full bg-border" />
               <span className="flex items-center gap-1.5"><Zap className="h-3 w-3 text-primary" /> Results in under 30s</span>
-              <span className="w-1 h-1 rounded-full bg-border" />
+              <span className="hidden sm:block w-1 h-1 rounded-full bg-border" />
               <span className="flex items-center gap-1.5"><Shield className="h-3 w-3 text-primary" /> No data stored</span>
             </motion.div>
           </div>
@@ -204,6 +231,31 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Showcase image section */}
+      <section className="py-16 relative">
+        <div className="container mx-auto px-4">
+          <motion.div
+            className="relative rounded-3xl overflow-hidden max-w-5xl mx-auto group"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <img
+              src={forensicsSplit}
+              alt="Real vs Fake deepfake comparison analysis"
+              className="w-full h-[300px] md:h-[450px] object-cover group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12">
+              <span className="font-display text-xs tracking-[0.3em] text-primary uppercase mb-2 block">Real-Time Detection</span>
+              <h3 className="font-display text-2xl md:text-3xl font-black mb-2">See What AI Sees</h3>
+              <p className="text-muted-foreground text-sm max-w-md">Our forensic analysis reveals hidden artifacts and manipulation patterns invisible to the human eye.</p>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Features */}
       <section id="features" className="py-24 md:py-32 relative">
         <div className="container mx-auto px-4">
@@ -233,9 +285,7 @@ const Index = () => {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08, duration: 0.5 }}
               >
-                {/* Gradient bg on hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${f.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-
                 <div className="relative z-10">
                   <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
                     <f.icon className="h-6 w-6 text-primary" />
@@ -249,9 +299,18 @@ const Index = () => {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* How It Works with background image */}
       <section id="how-it-works" className="py-24 md:py-32 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/20 to-transparent" />
+        {/* Background image */}
+        <div className="absolute inset-0">
+          <img
+            src={aiNetworkBg}
+            alt="AI neural network visualization"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-background/90" />
+        </div>
+
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             className="text-center mb-20"
@@ -290,6 +349,63 @@ const Index = () => {
                 </div>
                 <h3 className="font-display text-sm font-bold tracking-wider mb-3">{s.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">{s.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section id="testimonials" className="py-24 md:py-32 relative">
+        <div className="container mx-auto px-4">
+          <motion.div
+            className="text-center mb-20"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <span className="font-display text-xs tracking-[0.3em] text-primary uppercase mb-4 block">Testimonials</span>
+            <h2 className="font-display text-4xl md:text-5xl font-black mb-5">
+              Trusted by{" "}
+              <span className="text-gradient-primary">Experts</span>
+            </h2>
+            <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed">
+              Professionals across journalism, research, and security rely on DeepFake-X daily.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {testimonials.map((t, i) => (
+              <motion.div
+                key={t.name}
+                className="glass rounded-2xl p-8 relative overflow-hidden group hover:border-primary/30 transition-all duration-500"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+              >
+                {/* Subtle quote mark */}
+                <Quote className="absolute top-6 right-6 h-10 w-10 text-primary/10 group-hover:text-primary/20 transition-colors duration-500" />
+
+                <div className="flex items-center gap-1 mb-4">
+                  {Array.from({ length: t.rating }).map((_, j) => (
+                    <Star key={j} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+
+                <p className="text-sm text-muted-foreground leading-relaxed mb-6 relative z-10">
+                  "{t.quote}"
+                </p>
+
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center font-display text-sm font-bold text-foreground">
+                    {t.name.split(" ").map(n => n[0]).join("")}
+                  </div>
+                  <div>
+                    <p className="font-display text-xs font-bold tracking-wider">{t.name}</p>
+                    <p className="text-[11px] text-muted-foreground">{t.role}</p>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
