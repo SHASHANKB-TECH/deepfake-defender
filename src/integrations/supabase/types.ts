@@ -16,10 +16,13 @@ export type Database = {
     Tables: {
       analyses: {
         Row: {
+          anomalies: Json | null
           audio_visual_detail: string | null
           audio_visual_pass: boolean | null
           audio_visual_score: number | null
+          confidence_reasons: Json | null
           created_at: string
+          detailed_report: Json | null
           eye_reflection_detail: string | null
           eye_reflection_pass: boolean | null
           eye_reflection_score: number | null
@@ -38,16 +41,21 @@ export type Database = {
           physiological_pass: boolean | null
           physiological_score: number | null
           risk_level: string | null
+          scan_mode: string | null
+          suspected_method: string | null
           temporal_consistency_detail: string | null
           temporal_consistency_pass: boolean | null
           temporal_consistency_score: number | null
           user_id: string
         }
         Insert: {
+          anomalies?: Json | null
           audio_visual_detail?: string | null
           audio_visual_pass?: boolean | null
           audio_visual_score?: number | null
+          confidence_reasons?: Json | null
           created_at?: string
+          detailed_report?: Json | null
           eye_reflection_detail?: string | null
           eye_reflection_pass?: boolean | null
           eye_reflection_score?: number | null
@@ -66,16 +74,21 @@ export type Database = {
           physiological_pass?: boolean | null
           physiological_score?: number | null
           risk_level?: string | null
+          scan_mode?: string | null
+          suspected_method?: string | null
           temporal_consistency_detail?: string | null
           temporal_consistency_pass?: boolean | null
           temporal_consistency_score?: number | null
           user_id: string
         }
         Update: {
+          anomalies?: Json | null
           audio_visual_detail?: string | null
           audio_visual_pass?: boolean | null
           audio_visual_score?: number | null
+          confidence_reasons?: Json | null
           created_at?: string
+          detailed_report?: Json | null
           eye_reflection_detail?: string | null
           eye_reflection_pass?: boolean | null
           eye_reflection_score?: number | null
@@ -94,6 +107,8 @@ export type Database = {
           physiological_pass?: boolean | null
           physiological_score?: number | null
           risk_level?: string | null
+          scan_mode?: string | null
+          suspected_method?: string | null
           temporal_consistency_detail?: string | null
           temporal_consistency_pass?: boolean | null
           temporal_consistency_score?: number | null
