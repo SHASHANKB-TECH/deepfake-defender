@@ -5,22 +5,25 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
-  Shield, ArrowLeft, Eye, ScanLine, BarChart3, Timer, Brain, CheckCircle, XCircle,
+  ArrowLeft, Eye, ScanLine, BarChart3, Timer, Brain, CheckCircle, XCircle,
   Download, Share2, Info, AlertTriangle, Fingerprint, Focus, Layers, Microscope,
-  ChevronDown, ChevronUp, FileWarning, Lightbulb, Copy, ExternalLink
+  ChevronDown, ChevronUp, FileWarning, Lightbulb
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import AtmosphericBackground from "@/components/AtmosphericBackground";
+import Navbar from "@/components/Navbar";
+import CountUp from "@/components/CountUp";
 
 const MODULE_META = [
-  { key: "facial_inconsistency", dbKey: "facial_artifact", icon: ScanLine, label: "Facial Inconsistency", color: "from-violet-400 to-purple-500", education: "AI-generated faces often show unnatural skin texture, inconsistent lighting, or subtle warping around hairlines and ears." },
-  { key: "metadata_compression", dbKey: "audio_visual", icon: Layers, label: "Metadata & Compression", color: "from-pink-400 to-rose-500", education: "Real photos contain EXIF data from cameras. Deepfakes often have missing metadata or show signs of double-compression." },
-  { key: "gan_fingerprint", dbKey: "frequency_domain", icon: Fingerprint, label: "GAN Fingerprint", color: "from-amber-400 to-orange-500", education: "GANs (Generative Adversarial Networks) leave invisible fingerprints in the frequency domain — patterns like checkerboard artifacts from upsampling layers." },
-  { key: "semantic_consistency", dbKey: null, icon: Focus, label: "Semantic Consistency", color: "from-teal-400 to-cyan-500", education: "AI struggles with details like correct tooth count, proper hand anatomy (5 fingers), and physically plausible background objects." },
-  { key: "eye_reflection", dbKey: "eye_reflection", icon: Eye, label: "Eye Reflection", color: "from-cyan-400 to-blue-500", education: "Real eyes reflect the same light sources. AI-generated faces often have mismatched, missing, or impossible eye reflections (catchlights)." },
-  { key: "temporal_consistency", dbKey: "temporal_consistency", icon: Timer, label: "Temporal Consistency", color: "from-emerald-400 to-green-500", education: "In deepfake videos, facial regions may flicker between frames, and blinking patterns are often unnatural — too frequent or completely absent." },
-  { key: "biological_signals", dbKey: "physiological", icon: Brain, label: "Biological Signals", color: "from-sky-400 to-indigo-500", education: "Real faces show subtle color changes from blood flow (rPPG). Deepfakes lack these micro-signals and often miss realistic micro-expressions." },
-  { key: "boundary_blending", dbKey: null, icon: Microscope, label: "Boundary & Blending", color: "from-rose-400 to-red-500", education: "Face-swap deepfakes show edge bleeding around the jawline and neck, with color temperature mismatches between the swapped face and the original body." },
+  { key: "facial_inconsistency", dbKey: "facial_artifact", icon: ScanLine, label: "Facial Inconsistency", education: "AI-generated faces often show unnatural skin texture, inconsistent lighting, or subtle warping around hairlines and ears." },
+  { key: "metadata_compression", dbKey: "audio_visual", icon: Layers, label: "Metadata & Compression", education: "Real photos contain EXIF data from cameras. Deepfakes often have missing metadata or show signs of double-compression." },
+  { key: "gan_fingerprint", dbKey: "frequency_domain", icon: Fingerprint, label: "GAN Fingerprint", education: "GANs leave invisible fingerprints in the frequency domain — patterns like checkerboard artifacts from upsampling layers." },
+  { key: "semantic_consistency", dbKey: null, icon: Focus, label: "Semantic Consistency", education: "AI struggles with details like correct tooth count, proper hand anatomy, and physically plausible backgrounds." },
+  { key: "eye_reflection", dbKey: "eye_reflection", icon: Eye, label: "Eye Reflection", education: "Real eyes reflect the same light sources. AI-generated faces often have mismatched or impossible eye reflections." },
+  { key: "temporal_consistency", dbKey: "temporal_consistency", icon: Timer, label: "Temporal Consistency", education: "In deepfake videos, facial regions may flicker between frames, and blinking patterns are often unnatural." },
+  { key: "biological_signals", dbKey: "physiological", icon: Brain, label: "Biological Signals", education: "Real faces show subtle color changes from blood flow (rPPG). Deepfakes lack these micro-signals." },
+  { key: "boundary_blending", dbKey: null, icon: Microscope, label: "Boundary & Blending", education: "Face-swap deepfakes show edge bleeding around the jawline and neck, with color temperature mismatches." },
 ];
 
 const Results = () => {
@@ -53,101 +56,50 @@ const Results = () => {
   const toggleModule = (key: string) => {
     setExpandedModules(prev => {
       const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
+      if (next.has(key)) next.delete(key); else next.add(key);
       return next;
     });
   };
 
   const handleShare = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      toast.success("Link copied to clipboard!");
-    } catch {
-      toast.error("Failed to copy link");
-    }
+    try { await navigator.clipboard.writeText(window.location.href); toast.success("Link copied!"); } catch { toast.error("Failed to copy"); }
   };
 
   const handleExportPDF = () => {
-    if (!reportRef.current || !analysis) return;
-    // Simple text-based PDF export using print
+    if (!analysis) return;
     const w = window.open("", "_blank");
     if (!w) { toast.error("Please allow popups"); return; }
-
     const report = analysis.detailed_report;
     const modules = report?.modules || {};
-
-    w.document.write(`
-      <html><head><title>DeepFake-X Report - ${analysis.file_name}</title>
-      <style>
-        body { font-family: 'Segoe UI', system-ui, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; color: #1a1a2e; }
-        h1 { font-size: 24px; border-bottom: 3px solid #06b6d4; padding-bottom: 10px; }
-        h2 { font-size: 18px; margin-top: 30px; color: #333; }
-        .score-box { background: #f8f9fa; border-radius: 12px; padding: 24px; text-align: center; margin: 20px 0; }
-        .score { font-size: 48px; font-weight: 900; }
-        .score.authentic { color: #10b981; }
-        .score.suspicious { color: #f59e0b; }
-        .score.deepfake { color: #ef4444; }
-        .score.inconclusive { color: #8b5cf6; }
-        .module { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 12px 0; }
-        .module-header { display: flex; justify-content: space-between; align-items: center; }
-        .pass { color: #10b981; font-weight: 600; }
-        .fail { color: #ef4444; font-weight: 600; }
-        .anomaly { background: #fef3c7; border-left: 3px solid #f59e0b; padding: 8px 12px; margin: 8px 0; font-size: 14px; }
-        .reason { padding: 4px 0; font-size: 14px; }
-        .meta { color: #6b7280; font-size: 13px; }
-        @media print { body { margin: 20px; } }
-      </style></head><body>
+    w.document.write(`<html><head><title>DeepFake-X Report</title>
+      <style>body{font-family:system-ui;max-width:800px;margin:40px auto;padding:20px;color:#1a1a2e}h1{border-bottom:3px solid #00F5FF;padding-bottom:10px}h2{margin-top:30px}.score-box{background:#f0f0f0;border-radius:12px;padding:24px;text-align:center;margin:20px 0}.score{font-size:48px;font-weight:900}.module{border:1px solid #e5e7eb;border-radius:8px;padding:16px;margin:12px 0}.anomaly{background:#fef3c7;border-left:3px solid #f59e0b;padding:8px 12px;margin:8px 0;font-size:14px}@media print{body{margin:20px}}</style></head><body>
       <h1>🛡️ DeepFake-X Forensic Report</h1>
-      <p class="meta">File: ${analysis.file_name} | Type: ${analysis.file_type} | Date: ${new Date(analysis.created_at).toLocaleString()}</p>
-      <p class="meta">Scan Mode: ${analysis.scan_mode === 'deep' ? 'Deep Scan' : 'Standard'} | Suspected Method: ${analysis.suspected_method || 'N/A'}</p>
-      
-      <div class="score-box">
-        <div class="score ${analysis.risk_level === 'authentic' ? 'authentic' : analysis.risk_level === 'suspicious' ? 'suspicious' : analysis.risk_level === 'inconclusive' ? 'inconclusive' : 'deepfake'}">${analysis.overall_score}%</div>
-        <div style="font-size:18px;font-weight:600;margin-top:8px;">${analysis.risk_level === 'authentic' ? '✓ Authentic' : analysis.risk_level === 'suspicious' ? '⚠ Suspicious' : analysis.risk_level === 'inconclusive' ? '? Inconclusive' : '✕ Likely Deepfake'}</div>
-      </div>
-
+      <p>File: ${analysis.file_name} | ${new Date(analysis.created_at).toLocaleString()}</p>
+      <div class="score-box"><div class="score">${analysis.overall_score}%</div><div>${analysis.risk_level}</div></div>
       <h2>Confidence Reasoning</h2>
-      ${(analysis.confidence_reasons || []).map((r: string, i: number) => `<div class="reason">${i + 1}. ${r}</div>`).join('')}
-
+      ${(analysis.confidence_reasons || []).map((r: string, i: number) => `<p>${i + 1}. ${r}</p>`).join('')}
       <h2>Module Breakdown</h2>
       ${MODULE_META.map(mod => {
         const m = modules[mod.key] || {};
-        return `<div class="module">
-          <div class="module-header">
-            <strong>${mod.label}</strong>
-            <span class="${m.pass ? 'pass' : 'fail'}">${m.score ?? '—'}/100 ${m.pass ? '✓ PASS' : '✕ FAIL'}</span>
-          </div>
-          <p style="margin:8px 0;font-size:14px;">${m.detail || '—'}</p>
-          ${(m.anomalies || []).map((a: any) => `<div class="anomaly"><strong>[${a.severity?.toUpperCase()}]</strong> ${a.finding} — ${a.explanation}</div>`).join('')}
-        </div>`;
+        return `<div class="module"><strong>${mod.label}</strong> — ${m.score ?? '—'}/100 ${m.pass ? '✓' : '✕'}<p>${m.detail || ''}</p>${(m.anomalies || []).map((a: any) => `<div class="anomaly"><strong>[${a.severity?.toUpperCase()}]</strong> ${a.finding}</div>`).join('')}</div>`;
       }).join('')}
-
-      <p class="meta" style="margin-top:40px;text-align:center;">Generated by DeepFake-X — AI-Powered Media Forensics</p>
-      </body></html>
-    `);
+      <p style="margin-top:40px;text-align:center;color:#888">Generated by DeepFake-X</p></body></html>`);
     w.document.close();
     w.print();
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#050508" }}>
         <div className="relative">
-          <div className="h-12 w-12 border-2 border-primary/30 rounded-full" />
-          <div className="absolute inset-0 h-12 w-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <div className="h-12 w-12 border-2 rounded-full" style={{ borderColor: "rgba(0,245,255,0.3)" }} />
+          <div className="absolute inset-0 h-12 w-12 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "#00F5FF", borderTopColor: "transparent" }} />
         </div>
       </div>
     );
   }
 
-  if (!analysis) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground">
-        Analysis not found.
-      </div>
-    );
-  }
+  if (!analysis) return <div className="min-h-screen flex items-center justify-center" style={{ background: "#050508", color: "#888899" }}>Analysis not found.</div>;
 
   const score = analysis.overall_score ?? 0;
   const riskLevel = analysis.risk_level;
@@ -161,18 +113,12 @@ const Results = () => {
   const suspectedMethod = analysis.suspected_method || report.suspected_method || "Unknown";
   const allAnomalies = analysis.anomalies || [];
 
-  const scoreColor = isAuthentic ? "text-emerald-400" : isSuspicious ? "text-amber-400" : isInconclusive ? "text-violet-400" : "text-red-400";
-  const gaugeStroke = isAuthentic ? "url(#greenGrad)" : isSuspicious ? "url(#yellowGrad)" : isInconclusive ? "url(#purpleGrad)" : "url(#redGrad)";
-  const glowClass = isAuthentic ? "shadow-[0_0_40px_hsl(150_60%_50%/0.15)]" : isSuspicious ? "shadow-[0_0_40px_hsl(45_90%_55%/0.15)]" : isInconclusive ? "shadow-[0_0_40px_hsl(270_60%_55%/0.15)]" : "shadow-[0_0_40px_hsl(0_70%_55%/0.15)]";
-  const riskLabel = isAuthentic ? "Authentic" : isSuspicious ? "Suspicious" : isInconclusive ? "Inconclusive — Manual Review Recommended" : "Likely Deepfake / AI Generated";
+  const scoreColor = isAuthentic ? "#00FF88" : isSuspicious ? "#FBBF24" : isInconclusive ? "#A78BFA" : "#FF003C";
+  const riskLabel = isAuthentic ? "Authentic" : isSuspicious ? "Suspicious" : isInconclusive ? "Inconclusive" : "Likely Deepfake";
 
   const circumference = 2 * Math.PI * 72;
   const offset = circumference - (score / 100) * circumference;
-
-  const passCount = MODULE_META.filter(m => {
-    const mod = modules[m.key];
-    return mod?.pass;
-  }).length;
+  const passCount = MODULE_META.filter(m => modules[m.key]?.pass).length;
 
   const severityCount = {
     high: allAnomalies.filter((a: any) => a.severity === "high").length,
@@ -181,103 +127,62 @@ const Results = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background font-body relative overflow-hidden" ref={reportRef}>
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-      </div>
+    <div className="min-h-screen font-body relative overflow-hidden" ref={reportRef} style={{ background: "#050508" }}>
+      <AtmosphericBackground />
+      <Navbar showDashboard showAnalyze />
 
-      <nav className="sticky top-0 z-50 glass-strong">
-        <div className="container mx-auto flex items-center justify-between h-14 px-4">
-          <Link to="/dashboard" className="flex items-center gap-2">
-            <Shield className="h-6 w-6 text-primary" />
-            <span className="font-display text-sm font-bold tracking-wider">DEEPFAKE-X</span>
-          </Link>
-          <Button asChild variant="ghost" size="sm" className="text-xs">
-            <Link to="/dashboard"><ArrowLeft className="h-3.5 w-3.5 mr-1" /> Dashboard</Link>
-          </Button>
-        </div>
-      </nav>
-
-      <div className="container mx-auto px-4 py-8 max-w-5xl relative z-10">
+      <div className="container mx-auto px-4 py-8 pt-24 max-w-5xl relative z-10">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="font-display text-2xl md:text-3xl font-bold mb-1 text-gradient-primary">Forensic Analysis Report</h1>
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <div className="flex items-center gap-3 text-sm font-mono" style={{ color: "#888899" }}>
                 <span>{analysis.file_name}</span>
-                {analysis.scan_mode === "deep" && <Badge variant="secondary" className="text-[10px]">DEEP SCAN</Badge>}
+                {analysis.scan_mode === "deep" && <Badge className="text-[10px] border-none" style={{ background: "rgba(255,0,60,0.15)", color: "#FF003C" }}>DEEP SCAN</Badge>}
               </div>
             </div>
             <div className="flex gap-2">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" size="sm" className="text-xs gap-1.5" onClick={() => setShowEducation(!showEducation)}>
-                    <Lightbulb className="h-3.5 w-3.5" /> {showEducation ? "Hide" : "Learn"}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Toggle educational explanations for each module</TooltipContent>
-              </Tooltip>
-              <Button variant="outline" size="sm" className="text-xs gap-1.5" onClick={handleShare}>
+              <Button variant="outline" size="sm" className="text-xs gap-1.5 btn-press border-primary/20 bg-transparent" onClick={() => setShowEducation(!showEducation)}>
+                <Lightbulb className="h-3.5 w-3.5" /> {showEducation ? "Hide" : "Learn"}
+              </Button>
+              <Button variant="outline" size="sm" className="text-xs gap-1.5 btn-press border-primary/20 bg-transparent" onClick={handleShare}>
                 <Share2 className="h-3.5 w-3.5" /> Share
               </Button>
-              <Button variant="outline" size="sm" className="text-xs gap-1.5" onClick={handleExportPDF}>
+              <Button variant="outline" size="sm" className="text-xs gap-1.5 btn-press border-primary/20 bg-transparent glow-primary" onClick={handleExportPDF}>
                 <Download className="h-3.5 w-3.5" /> PDF Report
               </Button>
             </div>
           </div>
         </motion.div>
 
-        {/* Inconclusive banner */}
         {isInconclusive && (
-          <motion.div
-            className="glass rounded-xl p-4 mb-6 flex items-center gap-3 border-violet-500/30"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          >
-            <FileWarning className="h-5 w-5 text-violet-400 flex-shrink-0" />
+          <motion.div className="glass rounded-xl p-4 mb-6 flex items-center gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <FileWarning className="h-5 w-5 flex-shrink-0" style={{ color: "#A78BFA" }} />
             <div>
-              <p className="text-sm font-display font-semibold text-violet-400">Inconclusive Results</p>
-              <p className="text-xs text-muted-foreground">Confidence is between 40-60%. Manual review by a forensics expert is recommended. Try uploading a higher resolution version.</p>
+              <p className="text-sm font-display font-semibold" style={{ color: "#A78BFA" }}>Inconclusive Results</p>
+              <p className="text-xs font-mono" style={{ color: "#888899" }}>Confidence is between 40-60%. Manual review recommended.</p>
             </div>
           </motion.div>
         )}
 
-        {/* Score + Summary Row */}
+        {/* Score + Summary */}
         <div className="grid md:grid-cols-[300px_1fr] gap-6 mb-8">
-          {/* Score Card */}
           <motion.div
-            className={`glass rounded-2xl p-8 text-center ${glowClass} relative overflow-hidden`}
+            className="glass rounded-2xl p-8 text-center relative overflow-hidden"
+            style={{ boxShadow: `0 0 40px ${scoreColor}15` }}
             initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
           >
-            <div className="absolute inset-0 opacity-[0.03]" style={{
-              backgroundImage: `linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)`,
-              backgroundSize: '30px 30px'
-            }} />
-
             <div className="relative z-10">
               <div className="relative inline-block mb-4">
                 <svg width="180" height="180" className="-rotate-90">
                   <defs>
-                    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#34d399" /><stop offset="100%" stopColor="#059669" />
-                    </linearGradient>
-                    <linearGradient id="yellowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#fbbf24" /><stop offset="100%" stopColor="#f59e0b" />
-                    </linearGradient>
-                    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#f87171" /><stop offset="100%" stopColor="#dc2626" />
-                    </linearGradient>
-                    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#a78bfa" /><stop offset="100%" stopColor="#7c3aed" />
-                    </linearGradient>
                     <filter id="glow"><feGaussianBlur stdDeviation="3" result="coloredBlur" /><feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
                   </defs>
-                  <circle cx="90" cy="90" r="72" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" opacity="0.3" />
+                  <circle cx="90" cy="90" r="72" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="8" />
                   <motion.circle
                     cx="90" cy="90" r="72" fill="none"
-                    stroke={gaugeStroke} strokeWidth="8" strokeLinecap="round"
+                    stroke={scoreColor} strokeWidth="8" strokeLinecap="round"
                     strokeDasharray={circumference}
                     initial={{ strokeDashoffset: circumference }}
                     animate={{ strokeDashoffset: offset }}
@@ -286,67 +191,51 @@ const Results = () => {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <motion.span
-                    className={`font-display text-4xl font-black ${scoreColor}`}
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.5 }}
-                  >
-                    {score}%
-                  </motion.span>
-                  <span className="text-[10px] text-muted-foreground mt-1">Authenticity</span>
+                  <span className="font-display text-4xl font-black" style={{ color: scoreColor }}>
+                    <CountUp end={score} suffix="%" />
+                  </span>
+                  <span className="text-[10px] font-mono mt-1" style={{ color: "#888899" }}>Authenticity</span>
                 </div>
               </div>
 
-              <Badge
-                variant={isAuthentic ? "default" : isInconclusive ? "secondary" : isSuspicious ? "secondary" : "destructive"}
-                className="font-display text-xs tracking-wider px-3 py-1"
-              >
+              <Badge className="font-display text-xs tracking-wider px-3 py-1 border-none" style={{ background: `${scoreColor}20`, color: scoreColor }}>
                 {riskLabel}
               </Badge>
 
               {suspectedMethod && suspectedMethod !== "None detected" && (
                 <div className="mt-4 glass rounded-lg p-2">
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Suspected Method</p>
-                  <p className="text-xs font-display font-bold text-foreground">{suspectedMethod}</p>
+                  <p className="text-[10px] font-mono uppercase tracking-wider" style={{ color: "#888899" }}>Suspected Method</p>
+                  <p className="text-xs font-display font-bold" style={{ color: "#F0F0F0" }}>{suspectedMethod}</p>
                 </div>
               )}
             </div>
           </motion.div>
 
-          {/* Summary Panel */}
           <motion.div className="space-y-4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
-            {/* Confidence Reasons */}
             <div className="glass rounded-xl p-5">
-              <h3 className="font-display text-xs tracking-[0.2em] text-muted-foreground uppercase mb-3">Why We Think This</h3>
+              <h3 className="font-mono text-xs tracking-[0.2em] uppercase mb-3" style={{ color: "#888899" }}>Why We Think This</h3>
               <div className="space-y-2">
                 {confidenceReasons.map((reason: string, i: number) => (
                   <div key={i} className="flex items-start gap-2">
-                    <span className="text-xs font-display font-bold text-primary mt-0.5">{i + 1}.</span>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{reason}</p>
+                    <span className="text-xs font-display font-bold mt-0.5" style={{ color: "#00F5FF" }}>{i + 1}.</span>
+                    <p className="text-sm leading-relaxed" style={{ color: "#888899" }}>{reason}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Quick Stats Row */}
             <div className="grid grid-cols-4 gap-2">
-              <div className="glass rounded-lg p-3 text-center">
-                <p className="font-display text-lg font-bold">{passCount}/{MODULE_META.length}</p>
-                <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Passed</p>
-              </div>
-              <div className="glass rounded-lg p-3 text-center">
-                <p className="font-display text-lg font-bold text-red-400">{severityCount.high}</p>
-                <p className="text-[9px] text-muted-foreground uppercase tracking-wider">High Sev</p>
-              </div>
-              <div className="glass rounded-lg p-3 text-center">
-                <p className="font-display text-lg font-bold text-amber-400">{severityCount.medium}</p>
-                <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Med Sev</p>
-              </div>
-              <div className="glass rounded-lg p-3 text-center">
-                <p className="font-display text-lg font-bold text-emerald-400">{severityCount.low}</p>
-                <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Low Sev</p>
-              </div>
+              {[
+                { label: "Passed", value: `${passCount}/${MODULE_META.length}`, color: "#F0F0F0" },
+                { label: "High Sev", value: severityCount.high, color: "#FF003C" },
+                { label: "Med Sev", value: severityCount.medium, color: "#FBBF24" },
+                { label: "Low Sev", value: severityCount.low, color: "#00FF88" },
+              ].map(s => (
+                <div key={s.label} className="glass rounded-lg p-3 text-center">
+                  <p className="font-display text-lg font-bold" style={{ color: s.color }}>{s.value}</p>
+                  <p className="text-[9px] font-mono uppercase tracking-wider" style={{ color: "#888899" }}>{s.label}</p>
+                </div>
+              ))}
             </div>
           </motion.div>
         </div>
@@ -354,8 +243,8 @@ const Results = () => {
         {/* Module Breakdown */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display text-lg font-semibold tracking-wider">Detection Module Breakdown</h2>
-            <span className="text-xs text-muted-foreground">{MODULE_META.length} modules analyzed</span>
+            <h2 className="font-display text-lg font-semibold" style={{ color: "#F0F0F0" }}>Detection Module Breakdown</h2>
+            <span className="text-xs font-mono" style={{ color: "#888899" }}>{MODULE_META.length} modules</span>
           </div>
 
           <div className="space-y-3">
@@ -367,38 +256,37 @@ const Results = () => {
               const severity = modData.severity || "low";
               const anomalies = modData.anomalies || [];
               const isExpanded = expandedModules.has(mod.key);
+              const barColor = scoreVal >= 80 ? "#00FF88" : scoreVal >= 50 ? "#FBBF24" : "#FF003C";
 
               return (
                 <motion.div
                   key={mod.key}
-                  className="glass rounded-xl overflow-hidden hover:border-primary/20 transition-all"
+                  className="glass rounded-xl overflow-hidden transition-all hover:border-primary/20"
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 + i * 0.05 }}
                 >
-                  <div className={`h-[2px] bg-gradient-to-r ${mod.color}`} />
+                  <div className="h-[2px]" style={{ background: `linear-gradient(90deg, transparent, #00F5FF, transparent)` }} />
 
-                  <div
-                    className="p-4 cursor-pointer flex items-center gap-4"
-                    onClick={() => toggleModule(mod.key)}
-                  >
-                    <div className={`p-2 rounded-lg bg-gradient-to-br ${mod.color} bg-opacity-10 flex-shrink-0`}>
-                      <mod.icon className="h-4 w-4 text-foreground" />
+                  <div className="p-4 cursor-pointer flex items-center gap-4" onClick={() => toggleModule(mod.key)}>
+                    <div className="p-2 rounded-lg flex-shrink-0" style={{ background: "rgba(0,245,255,0.08)" }}>
+                      <mod.icon className="h-4 w-4" style={{ color: "#00F5FF" }} />
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-display text-xs font-semibold tracking-wider">{mod.label}</span>
-                        <Badge
-                          variant={severity === "high" ? "destructive" : severity === "medium" ? "secondary" : "default"}
-                          className="text-[9px] px-1.5 py-0"
-                        >
+                        <span className="font-display text-xs font-semibold tracking-wider" style={{ color: "#F0F0F0" }}>{mod.label}</span>
+                        <Badge className="text-[9px] px-1.5 py-0 border-none" style={{
+                          background: severity === "high" ? "rgba(255,0,60,0.15)" : severity === "medium" ? "rgba(251,191,36,0.15)" : "rgba(0,255,136,0.15)",
+                          color: severity === "high" ? "#FF003C" : severity === "medium" ? "#FBBF24" : "#00FF88",
+                        }}>
                           {severity.toUpperCase()}
                         </Badge>
                       </div>
-                      <div className="w-full bg-muted/50 rounded-full h-1 mt-2 overflow-hidden">
+                      <div className="w-full rounded-full h-1 mt-2 overflow-hidden" style={{ background: "rgba(255,255,255,0.05)" }}>
                         <motion.div
-                          className={`h-1 rounded-full bg-gradient-to-r ${mod.color}`}
+                          className="h-1 rounded-full"
+                          style={{ background: barColor }}
                           initial={{ width: 0 }}
                           animate={{ width: `${scoreVal}%` }}
                           transition={{ delay: 0.6 + i * 0.05, duration: 0.8 }}
@@ -407,13 +295,11 @@ const Results = () => {
                     </div>
 
                     <div className="flex items-center gap-3 flex-shrink-0">
-                      <span className={`font-display text-xl font-black ${
-                        scoreVal >= 80 ? "text-emerald-400" : scoreVal >= 50 ? "text-amber-400" : "text-red-400"
-                      }`}>
+                      <span className="font-display text-xl font-black" style={{ color: barColor }}>
                         {scoreVal}
                       </span>
-                      {pass ? <CheckCircle className="h-4 w-4 text-emerald-400" /> : <XCircle className="h-4 w-4 text-red-400" />}
-                      {isExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+                      {pass ? <CheckCircle className="h-4 w-4" style={{ color: "#00FF88" }} /> : <XCircle className="h-4 w-4" style={{ color: "#FF003C" }} />}
+                      {isExpanded ? <ChevronUp className="h-4 w-4" style={{ color: "#888899" }} /> : <ChevronDown className="h-4 w-4" style={{ color: "#888899" }} />}
                     </div>
                   </div>
 
@@ -426,42 +312,26 @@ const Results = () => {
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                       >
-                        <div className="px-4 pb-4 space-y-3 border-t border-border/30 pt-3">
-                          <p className="text-sm text-muted-foreground leading-relaxed">{detail}</p>
+                        <div className="px-4 pb-4 space-y-3 pt-3" style={{ borderTop: "1px solid rgba(0,245,255,0.05)" }}>
+                          <p className="text-sm leading-relaxed" style={{ color: "#888899" }}>{detail}</p>
 
                           {showEducation && (
                             <div className="glass rounded-lg p-3 flex items-start gap-2">
-                              <Lightbulb className="h-4 w-4 text-amber-400 flex-shrink-0 mt-0.5" />
-                              <p className="text-xs text-muted-foreground leading-relaxed">{mod.education}</p>
+                              <Lightbulb className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: "#FBBF24" }} />
+                              <p className="text-xs leading-relaxed" style={{ color: "#888899" }}>{mod.education}</p>
                             </div>
                           )}
 
                           {anomalies.length > 0 && (
                             <div className="space-y-2">
-                              <p className="text-xs font-display tracking-wider text-muted-foreground uppercase">Anomalies Found</p>
+                              <p className="text-xs font-mono tracking-wider uppercase" style={{ color: "#888899" }}>Anomalies Found</p>
                               {anomalies.map((anomaly: any, j: number) => (
-                                <div key={j} className="glass rounded-lg p-3 border-l-2 border-amber-500/50">
+                                <div key={j} className="glass rounded-lg p-3" style={{ borderLeft: `2px solid ${anomaly.severity === "high" ? "#FF003C" : anomaly.severity === "medium" ? "#FBBF24" : "#00FF88"}` }}>
                                   <div className="flex items-center gap-2 mb-1">
-                                    <AlertTriangle className={`h-3 w-3 ${
-                                      anomaly.severity === "high" ? "text-red-400" : anomaly.severity === "medium" ? "text-amber-400" : "text-emerald-400"
-                                    }`} />
-                                    <span className="text-xs font-display font-semibold">{anomaly.finding}</span>
-                                    <Badge
-                                      variant={anomaly.severity === "high" ? "destructive" : "secondary"}
-                                      className="text-[9px] px-1.5 py-0 ml-auto"
-                                    >
-                                      {anomaly.severity?.toUpperCase()}
-                                    </Badge>
+                                    <AlertTriangle className="h-3 w-3" style={{ color: anomaly.severity === "high" ? "#FF003C" : anomaly.severity === "medium" ? "#FBBF24" : "#00FF88" }} />
+                                    <span className="text-xs font-display font-semibold" style={{ color: "#F0F0F0" }}>{anomaly.finding}</span>
                                   </div>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <p className="text-xs text-muted-foreground cursor-help flex items-center gap-1">
-                                        {anomaly.explanation}
-                                        <Info className="h-3 w-3 inline flex-shrink-0" />
-                                      </p>
-                                    </TooltipTrigger>
-                                    <TooltipContent>Why we flagged this</TooltipContent>
-                                  </Tooltip>
+                                  <p className="text-xs" style={{ color: "#888899" }}>{anomaly.explanation}</p>
                                 </div>
                               ))}
                             </div>
@@ -476,15 +346,11 @@ const Results = () => {
           </div>
         </motion.div>
 
-        {/* Footer Actions */}
-        <motion.div
-          className="mt-10 flex items-center justify-center gap-3"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
-        >
-          <Button asChild variant="outline" size="sm" className="font-display text-xs tracking-wider">
-            <Link to="/analyze">Analyze Another File</Link>
+        <motion.div className="mt-10 flex items-center justify-center gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
+          <Button asChild variant="outline" size="sm" className="font-display text-xs tracking-[0.15em] btn-press border-primary/20 bg-transparent">
+            <Link to="/analyze">Analyze Another</Link>
           </Button>
-          <Button asChild variant="outline" size="sm" className="font-display text-xs tracking-wider">
+          <Button asChild variant="outline" size="sm" className="font-display text-xs tracking-[0.15em] btn-press border-primary/20 bg-transparent">
             <Link to="/history">View History</Link>
           </Button>
         </motion.div>

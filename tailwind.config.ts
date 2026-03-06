@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         display: ["Orbitron", "sans-serif"],
         body: ["Inter", "sans-serif"],
+        mono: ["Share Tech Mono", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -61,6 +62,15 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        cyan: {
+          glow: "#00F5FF",
+        },
+        danger: {
+          glow: "#FF003C",
+        },
+        safe: {
+          glow: "#00FF88",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -81,15 +91,41 @@ export default {
           "50%": { opacity: "1" },
         },
         "scan-line": {
-          "0%": { transform: "translateY(-100%)" },
-          "100%": { transform: "translateY(100%)" },
+          "0%": { transform: "translateY(-100vh)" },
+          "100%": { transform: "translateY(100vh)" },
+        },
+        "glitch-1": {
+          "0%, 100%": { transform: "translate(0)" },
+          "20%": { transform: "translate(-2px, 2px)" },
+          "40%": { transform: "translate(2px, -2px)" },
+          "60%": { transform: "translate(-1px, -1px)" },
+          "80%": { transform: "translate(1px, 1px)" },
+        },
+        "border-spin": {
+          "0%": { backgroundPosition: "0% 50%" },
+          "100%": { backgroundPosition: "200% 50%" },
+        },
+        "float": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-20px)" },
+        },
+        "drift": {
+          "0%": { transform: "translate(0, 0)" },
+          "25%": { transform: "translate(30px, -20px)" },
+          "50%": { transform: "translate(-10px, 30px)" },
+          "75%": { transform: "translate(-30px, -10px)" },
+          "100%": { transform: "translate(0, 0)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "pulse-glow": "pulse-glow 3s ease-in-out infinite",
+        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "scan-line": "scan-line 3s linear infinite",
+        "glitch": "glitch-1 0.3s ease-in-out",
+        "border-spin": "border-spin 3s linear infinite",
+        "float": "float 6s ease-in-out infinite",
+        "drift": "drift 20s ease-in-out infinite",
       },
     },
   },
