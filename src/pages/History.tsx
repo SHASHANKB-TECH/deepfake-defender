@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Shield, Search, ScanLine, Clock, ArrowLeft, Upload, GitCompare, Zap } from "lucide-react";
+import { Search, ScanLine, Clock, Upload, GitCompare, Zap } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { motion } from "framer-motion";
+import AtmosphericBackground from "@/components/AtmosphericBackground";
+import Navbar from "@/components/Navbar";
 
 interface Analysis {
   id: string;
@@ -31,28 +33,21 @@ const History = () => {
   const [selected, setSelected] = useState<string[]>([]);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      if (!session) navigate("/auth");
-    });
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) navigate("/auth");
-    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => { if (!session) navigate("/auth"); });
+    supabase.auth.getSession().then(({ data: { session } }) => { if (!session) navigate("/auth"); });
     return () => subscription.unsubscribe();
   }, [navigate]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await supabase
-        .from("analyses")
-        .select("id, file_name, file_type, overall_score, risk_level, created_at, scan_mode, suspected_method")
-        .order("created_at", { ascending: false });
+      const { data } = await supabase.from("analyses").select("id, file_name, file_type, overall_score, risk_level, created_at, scan_mode, suspected_method").order("created_at", { ascending: false });
       setAnalyses((data as Analysis[]) || []);
       setLoading(false);
     };
     fetchData();
   }, []);
 
-  const filtered = analyses.filter((a) => {
+  const filtered = analyses.filter(a => {
     if (searchQuery && !a.file_name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (riskFilter !== "all" && a.risk_level !== riskFilter) return false;
     if (mediaFilter === "image" && !a.file_type.startsWith("image")) return false;
@@ -69,74 +64,62 @@ const History = () => {
   };
 
   const riskBadge = (risk: string | null) => {
-    if (risk === "authentic") return <Badge className="font-display text-[10px] tracking-wider bg-emerald-500/20 text-emerald-400 border-emerald-500/30">Authentic</Badge>;
-    if (risk === "suspicious") return <Badge variant="secondary" className="font-display text-[10px] tracking-wider">Suspicious</Badge>;
-    if (risk === "inconclusive") return <Badge className="font-display text-[10px] tracking-wider bg-violet-500/20 text-violet-400 border-violet-500/30">Inconclusive</Badge>;
-    return <Badge variant="destructive" className="font-display text-[10px] tracking-wider">Likely Deepfake</Badge>;
+    const styles: Record<string, { bg: string; color: string; label: string }> = {
+      authentic: { bg: "rgba(0,255,136,0.15)", color: "#00FF88", label: "Authentic" },
+      suspicious: { bg: "rgba(251,191,36,0.15)", color: "#FBBF24", label: "Suspicious" },
+      inconclusive: { bg: "rgba(167,139,250,0.15)", color: "#A78BFA", label: "Inconclusive" },
+    };
+    const s = styles[risk || ""] || { bg: "rgba(255,0,60,0.15)", color: "#FF003C", label: "Likely Deepfake" };
+    return <Badge className="font-mono text-[10px] tracking-wider border-none" style={{ background: s.bg, color: s.color }}>{s.label}</Badge>;
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#050508" }}>
+        <div className="h-8 w-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: "#00F5FF", borderTopColor: "transparent" }} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background font-body">
-      <nav className="sticky top-0 z-50 glass-strong">
-        <div className="container mx-auto flex items-center justify-between h-14 px-4">
-          <Link to="/dashboard" className="flex items-center gap-2">
-            <Shield className="h-6 w-6 text-primary" />
-            <span className="font-display text-sm font-bold tracking-wider">DEEPFAKE-X</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Button asChild size="sm" className="font-display text-xs tracking-wider glow-primary">
-              <Link to="/analyze"><Upload className="h-3.5 w-3.5 mr-1.5" /> Analyze</Link>
-            </Button>
-            <Button asChild variant="ghost" size="sm" className="text-xs">
-              <Link to="/dashboard"><ArrowLeft className="h-3.5 w-3.5 mr-1" /> Dashboard</Link>
-            </Button>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen font-body relative" style={{ background: "#050508" }}>
+      <AtmosphericBackground />
+      <Navbar showDashboard showAnalyze />
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 pt-24 relative z-10">
         <motion.div className="flex items-center justify-between mb-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <h1 className="font-display text-2xl font-bold">Analysis History</h1>
+          <h1 className="font-display text-2xl font-bold" style={{ color: "#F0F0F0" }}>Analysis History</h1>
           <Button
             variant={compareMode ? "default" : "outline"}
             size="sm"
-            className="text-xs font-display tracking-wider gap-1.5"
+            className="text-xs font-display tracking-[0.15em] gap-1.5 btn-press border-primary/20 bg-transparent"
             onClick={() => { setCompareMode(!compareMode); setSelected([]); }}
           >
             <GitCompare className="h-3.5 w-3.5" />
-            {compareMode ? "Cancel Compare" : "Compare"}
+            {compareMode ? "Cancel" : "Compare"}
           </Button>
         </motion.div>
 
         {compareMode && (
           <motion.div className="glass rounded-xl p-4 mb-6 flex items-center justify-between" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-            <p className="text-sm text-muted-foreground">
-              Select 2 analyses to compare. <span className="text-foreground font-medium">{selected.length}/2 selected</span>
+            <p className="text-sm font-mono" style={{ color: "#888899" }}>
+              Select 2 analyses. <span style={{ color: "#F0F0F0" }}>{selected.length}/2</span>
             </p>
             {selected.length === 2 && (
-              <Button size="sm" className="text-xs font-display tracking-wider glow-primary" onClick={() => navigate(`/results/${selected[0]}`)}>
-                View Comparison
+              <Button size="sm" className="text-xs font-display tracking-[0.15em] glow-primary btn-press bg-primary text-primary-foreground" onClick={() => navigate(`/results/${selected[0]}`)}>
+                Compare
               </Button>
             )}
           </motion.div>
         )}
 
-        {/* Filters */}
         <motion.div className="flex flex-col sm:flex-row gap-3 mb-6" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search by file name..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 bg-background/50" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: "#888899" }} />
+            <Input placeholder="Search by file name..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-9 bg-muted/50 border-primary/10 focus:border-primary/40" />
           </div>
           <Select value={riskFilter} onValueChange={setRiskFilter}>
-            <SelectTrigger className="w-full sm:w-44 bg-background/50"><SelectValue placeholder="Risk level" /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-44 bg-muted/50 border-primary/10"><SelectValue placeholder="Risk level" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Results</SelectItem>
               <SelectItem value="authentic">Authentic</SelectItem>
@@ -146,7 +129,7 @@ const History = () => {
             </SelectContent>
           </Select>
           <Select value={mediaFilter} onValueChange={setMediaFilter}>
-            <SelectTrigger className="w-full sm:w-40 bg-background/50"><SelectValue placeholder="Media type" /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-40 bg-muted/50 border-primary/10"><SelectValue placeholder="Media type" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Media</SelectItem>
               <SelectItem value="image">Images</SelectItem>
@@ -155,68 +138,62 @@ const History = () => {
           </Select>
         </motion.div>
 
-        {/* Table */}
         {filtered.length === 0 ? (
           <motion.div className="glass rounded-xl p-12 text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <ScanLine className="h-10 w-10 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground">{analyses.length === 0 ? "No analyses yet." : "No results match your filters."}</p>
+            <ScanLine className="h-10 w-10 mx-auto mb-4" style={{ color: "#888899" }} />
+            <p style={{ color: "#888899" }}>{analyses.length === 0 ? "No analyses yet." : "No results match."}</p>
           </motion.div>
         ) : (
           <motion.div className="glass rounded-xl overflow-hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <Table>
               <TableHeader>
-                <TableRow className="hover:bg-transparent">
+                <TableRow className="hover:bg-transparent" style={{ borderColor: "rgba(0,245,255,0.05)" }}>
                   {compareMode && <TableHead className="w-10" />}
-                  <TableHead className="font-display text-xs tracking-wider">FILE</TableHead>
-                  <TableHead className="font-display text-xs tracking-wider">TYPE</TableHead>
-                  <TableHead className="font-display text-xs tracking-wider">SCORE</TableHead>
-                  <TableHead className="font-display text-xs tracking-wider">RESULT</TableHead>
-                  <TableHead className="font-display text-xs tracking-wider hidden md:table-cell">METHOD</TableHead>
-                  <TableHead className="font-display text-xs tracking-wider hidden md:table-cell">MODE</TableHead>
-                  <TableHead className="font-display text-xs tracking-wider">DATE</TableHead>
-                  <TableHead className="font-display text-xs tracking-wider text-right">ACTION</TableHead>
+                  <TableHead className="font-mono text-xs tracking-wider" style={{ color: "#888899" }}>FILE</TableHead>
+                  <TableHead className="font-mono text-xs tracking-wider" style={{ color: "#888899" }}>SCORE</TableHead>
+                  <TableHead className="font-mono text-xs tracking-wider" style={{ color: "#888899" }}>RESULT</TableHead>
+                  <TableHead className="font-mono text-xs tracking-wider hidden md:table-cell" style={{ color: "#888899" }}>METHOD</TableHead>
+                  <TableHead className="font-mono text-xs tracking-wider" style={{ color: "#888899" }}>DATE</TableHead>
+                  <TableHead className="font-mono text-xs tracking-wider text-right" style={{ color: "#888899" }}>ACTION</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((a) => (
+                {filtered.map(a => (
                   <TableRow
                     key={a.id}
-                    className={`cursor-pointer ${compareMode && selected.includes(a.id) ? "bg-primary/5" : ""}`}
+                    className="cursor-pointer transition-colors"
+                    style={{ borderColor: "rgba(0,245,255,0.05)", background: compareMode && selected.includes(a.id) ? "rgba(0,245,255,0.05)" : "transparent" }}
                     onClick={() => compareMode ? toggleSelect(a.id) : navigate(`/results/${a.id}`)}
                   >
                     {compareMode && (
                       <TableCell>
-                        <div className={`h-4 w-4 rounded-sm border-2 ${selected.includes(a.id) ? "bg-primary border-primary" : "border-border"}`} />
+                        <div className="h-4 w-4 rounded-sm border-2" style={{ borderColor: selected.includes(a.id) ? "#00F5FF" : "rgba(0,245,255,0.2)", background: selected.includes(a.id) ? "#00F5FF" : "transparent" }} />
                       </TableCell>
                     )}
-                    <TableCell className="font-medium max-w-[200px] truncate">{a.file_name}</TableCell>
-                    <TableCell className="text-xs text-muted-foreground">{a.file_type.split("/")[1]?.toUpperCase()}</TableCell>
                     <TableCell>
-                      <span className={`font-display font-bold text-sm ${
-                        (a.overall_score ?? 0) >= 80 ? "text-emerald-400" : (a.overall_score ?? 0) >= 50 ? "text-amber-400" : "text-red-400"
-                      }`}>
+                      <span className="font-medium max-w-[200px] truncate block" style={{ color: "#F0F0F0" }}>{a.file_name}</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="font-display font-bold text-sm" style={{
+                        color: (a.overall_score ?? 0) >= 80 ? "#00FF88" : (a.overall_score ?? 0) >= 50 ? "#FBBF24" : "#FF003C"
+                      }}>
                         {a.overall_score ?? "—"}%
                       </span>
                     </TableCell>
                     <TableCell>{riskBadge(a.risk_level)}</TableCell>
-                    <TableCell className="hidden md:table-cell text-xs text-muted-foreground">
-                      {a.suspected_method && a.suspected_method !== "None detected" && a.suspected_method !== "Unknown" ? a.suspected_method : "—"}
-                    </TableCell>
                     <TableCell className="hidden md:table-cell">
-                      {a.scan_mode === "deep" ? (
-                        <Badge variant="secondary" className="text-[9px] gap-1"><Zap className="h-2.5 w-2.5" /> Deep</Badge>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">Standard</span>
-                      )}
+                      <span className="text-xs font-mono" style={{ color: "#888899" }}>
+                        {a.suspected_method && a.suspected_method !== "None detected" && a.suspected_method !== "Unknown" ? a.suspected_method : "—"}
+                      </span>
                     </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
+                    <TableCell>
+                      <span className="flex items-center gap-1 text-xs font-mono" style={{ color: "#888899" }}>
                         <Clock className="h-3 w-3" />
                         {new Date(a.created_at).toLocaleDateString()}
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button asChild variant="outline" size="sm" className="text-xs" onClick={(e) => e.stopPropagation()}>
+                      <Button asChild variant="outline" size="sm" className="text-xs btn-press border-primary/20 bg-transparent" onClick={e => e.stopPropagation()}>
                         <Link to={`/results/${a.id}`}>View</Link>
                       </Button>
                     </TableCell>
