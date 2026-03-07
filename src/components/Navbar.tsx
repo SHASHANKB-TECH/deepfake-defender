@@ -9,10 +9,10 @@ interface NavbarProps {
   onLogout?: () => void;
 }
 
-const XLogo = () => (
+const ShieldLogo = () => (
   <div className="relative">
     <span className="font-display text-lg font-black" style={{ color: "#00F5FF", textShadow: "0 0 15px rgba(0,245,255,0.5)" }}>
-      X
+      ⛨
     </span>
   </div>
 );
