@@ -147,8 +147,15 @@ const Analyze = () => {
     setCurrentModule(0);
     try {
       if (files.length === 1) {
-        const id = await analyzeFile(files[0], 0);
-        if (id) navigate(`/results/${id}`);
+        const result = await analyzeFile(files[0], 0);
+        if (result) {
+          setResultAnalysis(result);
+          setShowResults(true);
+          setAnalyzing(false);
+          setCurrentModule(-1);
+          setFiles([]);
+          setPreviews([]);
+        }
       } else {
         for (let i = 0; i < files.length; i++) await analyzeFile(files[i], i);
         toast.success(`${files.length} files analyzed!`);
