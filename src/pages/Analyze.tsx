@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import type { User } from "@supabase/supabase-js";
 import AtmosphericBackground from "@/components/AtmosphericBackground";
 import Navbar from "@/components/Navbar";
+import ResultsDialog from "@/components/ResultsDialog";
 
 const MODULES = [
   { key: "facial_inconsistency", icon: ScanLine, label: "Facial Inconsistency Analysis", desc: "Scanning skin texture, lighting, hairlines, ear asymmetry..." },
@@ -42,6 +43,8 @@ const Analyze = () => {
   const [currentFileIndex, setCurrentFileIndex] = useState(0);
   const [dragOver, setDragOver] = useState(false);
   const [deepScan, setDeepScan] = useState(false);
+  const [resultAnalysis, setResultAnalysis] = useState<any>(null);
+  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
@@ -133,9 +136,9 @@ const Analyze = () => {
       frequency_domain_score: m.gan_fingerprint?.score, frequency_domain_pass: m.gan_fingerprint?.pass, frequency_domain_detail: m.gan_fingerprint?.detail,
       temporal_consistency_score: m.temporal_consistency?.score, temporal_consistency_pass: m.temporal_consistency?.pass, temporal_consistency_detail: m.temporal_consistency?.detail,
       physiological_score: m.biological_signals?.score, physiological_pass: m.biological_signals?.pass, physiological_detail: m.biological_signals?.detail,
-    }).select("id").single();
+    }).select("*").single();
     if (dbError) throw dbError;
-    return inserted.id;
+    return inserted;
   };
 
   const startAnalysis = async () => {
@@ -144,8 +147,15 @@ const Analyze = () => {
     setCurrentModule(0);
     try {
       if (files.length === 1) {
-        const id = await analyzeFile(files[0], 0);
-        if (id) navigate(`/results/${id}`);
+        const result = await analyzeFile(files[0], 0);
+        if (result) {
+          setResultAnalysis(result);
+          setShowResults(true);
+          setAnalyzing(false);
+          setCurrentModule(-1);
+          setFiles([]);
+          setPreviews([]);
+        }
       } else {
         for (let i = 0; i < files.length; i++) await analyzeFile(files[i], i);
         toast.success(`${files.length} files analyzed!`);
@@ -353,6 +363,15 @@ const Analyze = () => {
           </motion.div>
         )}
       </div>
+
+      <ResultsDialog
+        open={showResults}
+        onOpenChange={(open) => {
+          setShowResults(open);
+          if (!open) setResultAnalysis(null);
+        }}
+        analysis={resultAnalysis}
+      />
     </div>
   );
 };
