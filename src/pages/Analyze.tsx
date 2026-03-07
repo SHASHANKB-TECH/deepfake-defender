@@ -136,9 +136,9 @@ const Analyze = () => {
       frequency_domain_score: m.gan_fingerprint?.score, frequency_domain_pass: m.gan_fingerprint?.pass, frequency_domain_detail: m.gan_fingerprint?.detail,
       temporal_consistency_score: m.temporal_consistency?.score, temporal_consistency_pass: m.temporal_consistency?.pass, temporal_consistency_detail: m.temporal_consistency?.detail,
       physiological_score: m.biological_signals?.score, physiological_pass: m.biological_signals?.pass, physiological_detail: m.biological_signals?.detail,
-    }).select("id").single();
+    }).select("*").single();
     if (dbError) throw dbError;
-    return inserted.id;
+    return inserted;
   };
 
   const startAnalysis = async () => {
