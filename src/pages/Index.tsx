@@ -24,10 +24,10 @@ const steps = [
 ];
 
 const testimonials = [
-  { name: "Dr. Sarah Chen", role: "Digital Forensics Lead, Reuters", quote: "DeepFake-X has become an essential part of our verification pipeline. The multi-module approach catches things single-model detectors miss entirely.", rating: 5 },
+  { name: "Dr. Sarah Chen", role: "Digital Forensics Lead, Reuters", quote: "Crown Shield has become an essential part of our verification pipeline. The multi-module approach catches things single-model detectors miss entirely.", rating: 5 },
   { name: "Marcus Johnson", role: "Cybersecurity Researcher, MIT", quote: "The frequency domain analysis and eye reflection modules are remarkably sophisticated. This is the most comprehensive deepfake detection tool I've tested.", rating: 5 },
   { name: "Elena Rodriguez", role: "Investigative Journalist, AP News", quote: "In an era of information warfare, tools like this are critical. I've used it to verify sources on multiple breaking stories.", rating: 5 },
-  { name: "James Liu", role: "Trust & Safety Director, TechCorp", quote: "We integrated DeepFake-X into our content moderation workflow. It reduced deepfake slip-throughs by 94% in the first month.", rating: 5 },
+  { name: "James Liu", role: "Trust & Safety Director, TechCorp", quote: "We integrated Crown Shield into our content moderation workflow. It reduced deepfake slip-throughs by 94% in the first month.", rating: 5 },
 ];
 
 const Index = () => {

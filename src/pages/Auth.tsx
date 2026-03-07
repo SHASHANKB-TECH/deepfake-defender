@@ -72,8 +72,8 @@ const Auth = () => {
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="flex items-center gap-2 mb-6">
-            <span className="font-display text-lg font-black" style={{ color: "#00F5FF", textShadow: "0 0 15px rgba(0,245,255,0.5)" }}>X</span>
-            <span className="font-display text-sm font-bold tracking-[0.2em]" style={{ color: "#F0F0F0" }}>DEEPFAKE X</span>
+            <span className="font-display text-lg font-black" style={{ color: "#00F5FF", textShadow: "0 0 15px rgba(0,245,255,0.5)" }}>⛨</span>
+            <span className="font-display text-sm font-bold tracking-[0.2em]" style={{ color: "#F0F0F0" }}>CROWN SHIELD</span>
           </div>
 
           <h1 className="font-display text-xl font-bold mb-1" style={{ color: "#F0F0F0" }}>

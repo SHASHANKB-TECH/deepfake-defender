@@ -30,7 +30,7 @@ const Navbar = ({ showAuth, showDashboard, showAnalyze, onLogout }: NavbarProps)
     >
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <XLogo />
+          <ShieldLogo />
           <span className="font-display text-sm font-bold tracking-[0.2em]" style={{ color: "#F0F0F0" }}>
             CROWN SHIELD
           </span>

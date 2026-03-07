@@ -50,7 +50,7 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
   const [exiting, setExiting] = useState(false);
   const [displayedTitle, setDisplayedTitle] = useState("");
 
-  const title = "DEEPFAKE X";
+  const title = "CROWN SHIELD";
 
   useEffect(() => {
     const t = setTimeout(() => setLogoVisible(true), 300);
