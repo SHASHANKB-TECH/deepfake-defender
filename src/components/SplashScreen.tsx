@@ -50,7 +50,7 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
   const [exiting, setExiting] = useState(false);
   const [displayedTitle, setDisplayedTitle] = useState("");
 
-  const title = "DEEPFAKE X";
+  const title = "CROWN SHIELD";
 
   useEffect(() => {
     const t = setTimeout(() => setLogoVisible(true), 300);
@@ -197,7 +197,7 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
                         animationDelay: "0.1s",
                       }}
                     >
-                      X
+                      ⛨
                     </span>
                     <motion.span
                       className="font-display text-6xl font-black relative"
@@ -214,7 +214,7 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
                       }}
                       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                     >
-                      X
+                      ⛨
                     </motion.span>
                   </motion.div>
                 )}

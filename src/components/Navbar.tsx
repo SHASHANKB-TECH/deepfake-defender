@@ -9,10 +9,10 @@ interface NavbarProps {
   onLogout?: () => void;
 }
 
-const XLogo = () => (
+const ShieldLogo = () => (
   <div className="relative">
     <span className="font-display text-lg font-black" style={{ color: "#00F5FF", textShadow: "0 0 15px rgba(0,245,255,0.5)" }}>
-      X
+      ⛨
     </span>
   </div>
 );
@@ -30,9 +30,9 @@ const Navbar = ({ showAuth, showDashboard, showAnalyze, onLogout }: NavbarProps)
     >
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <XLogo />
+          <ShieldLogo />
           <span className="font-display text-sm font-bold tracking-[0.2em]" style={{ color: "#F0F0F0" }}>
-            DEEPFAKE X
+            CROWN SHIELD
           </span>
         </Link>
 
