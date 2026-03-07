@@ -363,6 +363,15 @@ const Analyze = () => {
           </motion.div>
         )}
       </div>
+
+      <ResultsDialog
+        open={showResults}
+        onOpenChange={(open) => {
+          setShowResults(open);
+          if (!open) setResultAnalysis(null);
+        }}
+        analysis={resultAnalysis}
+      />
     </div>
   );
 };
