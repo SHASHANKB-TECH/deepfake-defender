@@ -32,7 +32,7 @@ const Navbar = ({ showAuth, showDashboard, showAnalyze, onLogout }: NavbarProps)
         <Link to="/" className="flex items-center gap-2.5 group">
           <XLogo />
           <span className="font-display text-sm font-bold tracking-[0.2em]" style={{ color: "#F0F0F0" }}>
-            DEEPFAKE X
+            CROWN SHIELD
           </span>
         </Link>
 
