@@ -214,7 +214,7 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
                       }}
                       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                     >
-                      X
+                      ⛨
                     </motion.span>
                   </motion.div>
                 )}
