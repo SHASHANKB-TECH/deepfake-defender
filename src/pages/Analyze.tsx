@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import type { User } from "@supabase/supabase-js";
 import AtmosphericBackground from "@/components/AtmosphericBackground";
 import Navbar from "@/components/Navbar";
+import ResultsDialog from "@/components/ResultsDialog";
 
 const MODULES = [
   { key: "facial_inconsistency", icon: ScanLine, label: "Facial Inconsistency Analysis", desc: "Scanning skin texture, lighting, hairlines, ear asymmetry..." },
