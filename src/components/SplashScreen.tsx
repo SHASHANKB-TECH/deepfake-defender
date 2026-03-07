@@ -197,7 +197,7 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
                         animationDelay: "0.1s",
                       }}
                     >
-                      X
+                      ⛨
                     </span>
                     <motion.span
                       className="font-display text-6xl font-black relative"
