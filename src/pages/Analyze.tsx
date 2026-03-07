@@ -43,6 +43,8 @@ const Analyze = () => {
   const [currentFileIndex, setCurrentFileIndex] = useState(0);
   const [dragOver, setDragOver] = useState(false);
   const [deepScan, setDeepScan] = useState(false);
+  const [resultAnalysis, setResultAnalysis] = useState<any>(null);
+  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
