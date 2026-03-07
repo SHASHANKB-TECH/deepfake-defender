@@ -71,7 +71,7 @@ const Results = () => {
     if (!w) { toast.error("Please allow popups"); return; }
     const report = analysis.detailed_report;
     const modules = report?.modules || {};
-    w.document.write(`<html><head><title>DeepFake-X Report</title>
+    w.document.write(`<html><head><title>Crown Shield Report</title>
       <style>body{font-family:system-ui;max-width:800px;margin:40px auto;padding:20px;color:#1a1a2e}h1{border-bottom:3px solid #00F5FF;padding-bottom:10px}h2{margin-top:30px}.score-box{background:#f0f0f0;border-radius:12px;padding:24px;text-align:center;margin:20px 0}.score{font-size:48px;font-weight:900}.module{border:1px solid #e5e7eb;border-radius:8px;padding:16px;margin:12px 0}.anomaly{background:#fef3c7;border-left:3px solid #f59e0b;padding:8px 12px;margin:8px 0;font-size:14px}@media print{body{margin:20px}}</style></head><body>
       <h1>🛡️ DeepFake-X Forensic Report</h1>
       <p>File: ${analysis.file_name} | ${new Date(analysis.created_at).toLocaleString()}</p>
