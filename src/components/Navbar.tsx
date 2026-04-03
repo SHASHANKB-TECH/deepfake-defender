@@ -9,14 +9,6 @@ interface NavbarProps {
   onLogout?: () => void;
 }
 
-const ShieldLogo = () => (
-  <div className="relative">
-    <span className="font-display text-lg font-black" style={{ color: "#00F5FF", textShadow: "0 0 15px rgba(0,245,255,0.5)" }}>
-      ⛨
-    </span>
-  </div>
-);
-
 const Navbar = ({ showAuth, showDashboard, showAnalyze, onLogout }: NavbarProps) => {
   const location = useLocation();
   const isLanding = location.pathname === "/";
@@ -30,8 +22,17 @@ const Navbar = ({ showAuth, showDashboard, showAnalyze, onLogout }: NavbarProps)
     >
       <div className="container mx-auto flex items-center justify-between h-16 px-4">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <ShieldLogo />
-          <span className="font-display text-sm font-bold tracking-[0.2em]" style={{ color: "#F0F0F0" }}>
+          <span
+            className="font-display text-lg font-black"
+            style={{
+              background: "linear-gradient(135deg, hsl(265 90% 65%), hsl(38 100% 55%))",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            CS
+          </span>
+          <span className="font-display text-sm font-bold tracking-[0.15em] text-foreground">
             CROWN SHIELD
           </span>
         </Link>
@@ -43,7 +44,7 @@ const Navbar = ({ showAuth, showDashboard, showAnalyze, onLogout }: NavbarProps)
                 <a
                   key={item}
                   href={`#${item.toLowerCase().replace(/ /g, "-")}`}
-                  className="relative text-sm font-mono tracking-wider text-muted-foreground hover:text-foreground transition-colors group"
+                  className="relative text-sm text-muted-foreground hover:text-foreground transition-colors duration-300 group"
                 >
                   {item}
                   <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-primary transition-all duration-300 group-hover:w-full" />
@@ -54,29 +55,29 @@ const Navbar = ({ showAuth, showDashboard, showAnalyze, onLogout }: NavbarProps)
 
           {showAuth && (
             <>
-              <Link to="/auth" className="hidden md:inline text-sm font-mono tracking-wider text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/auth" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors duration-300">
                 Log In
               </Link>
-              <Button asChild size="sm" variant="outline" className="font-display text-xs tracking-[0.15em] btn-press border-primary/30 bg-transparent hover:bg-primary/10 hover:border-primary/60 transition-all">
-                <Link to="/auth?mode=signup">Run Analysis</Link>
+              <Button asChild size="sm" className="font-display text-xs tracking-[0.1em] btn-press bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg glow-primary">
+                <Link to="/auth?mode=signup">Get Started</Link>
               </Button>
             </>
           )}
 
           {showDashboard && (
-            <Button asChild variant="ghost" size="sm" className="font-mono text-xs tracking-wider text-muted-foreground">
+            <Button asChild variant="ghost" size="sm" className="text-sm text-muted-foreground">
               <Link to="/dashboard">Dashboard</Link>
             </Button>
           )}
 
           {showAnalyze && (
-            <Button asChild size="sm" variant="outline" className="font-display text-xs tracking-[0.15em] btn-press border-primary/30 bg-transparent hover:bg-primary/10">
-              <Link to="/analyze">Analyze</Link>
+            <Button asChild size="sm" className="font-display text-xs tracking-[0.1em] btn-press bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg">
+              <Link to="/analyze">+ New Scan</Link>
             </Button>
           )}
 
           {onLogout && (
-            <button onClick={onLogout} className="text-xs font-mono tracking-wider text-muted-foreground hover:text-foreground transition-colors">
+            <button onClick={onLogout} className="text-xs text-muted-foreground hover:text-foreground transition-colors duration-300">
               Logout
             </button>
           )}
