@@ -62,14 +62,17 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        cyan: {
-          glow: "#00F5FF",
+        violet: {
+          glow: "hsl(265 90% 65%)",
+        },
+        gold: {
+          glow: "hsl(38 100% 55%)",
         },
         danger: {
-          glow: "#FF003C",
+          glow: "hsl(0 85% 55%)",
         },
         safe: {
-          glow: "#00FF88",
+          glow: "hsl(155 80% 45%)",
         },
       },
       borderRadius: {
