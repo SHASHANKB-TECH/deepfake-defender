@@ -67,11 +67,11 @@ const Index = () => {
               className="font-display font-black tracking-tight leading-[0.9] mb-8"
               style={{ fontSize: "clamp(48px, 9vw, 120px)" }}
             >
-              <span className="text-foreground">IS IT </span>
+              <span className="text-foreground">SPOT THE </span>
               <span
                 className="text-gradient-primary"
               >
-                REAL?
+                DEEPFAKE
               </span>
             </motion.h1>
 
