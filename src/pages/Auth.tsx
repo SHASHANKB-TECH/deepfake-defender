@@ -94,7 +94,7 @@ const Auth = () => {
               <Label htmlFor="email" className="text-xs font-mono tracking-wider" style={{ color: "#888899" }}>EMAIL</Label>
               <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="mt-1.5 bg-muted/50 border-primary/10 focus:border-primary/40" />
             </div>
-            {mode !== "forgot" && (
+            {mode === "signup" && (
               <div>
                 <Label htmlFor="password" className="text-xs font-mono tracking-wider" style={{ color: "#888899" }}>PASSWORD</Label>
                 <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required minLength={6} className="mt-1.5 bg-muted/50 border-primary/10 focus:border-primary/40" />
