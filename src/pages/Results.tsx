@@ -36,14 +36,8 @@ const Results = () => {
   const reportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      if (!session) navigate("/auth");
-    });
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) navigate("/auth");
-    });
-    return () => subscription.unsubscribe();
-  }, [navigate]);
+    // auth removed
+  }, []);
 
   useEffect(() => {
     if (!id) return;
