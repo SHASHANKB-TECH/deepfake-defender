@@ -111,7 +111,7 @@ const Index = () => {
               className="flex flex-col sm:flex-row gap-3"
             >
               <Button asChild size="lg" className="font-display text-sm tracking-wider px-10 h-13 btn-press bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl glow-primary">
-                <Link to="/auth?mode=signup">
+                <Link to="/dashboard">
                   Start Analyzing <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -257,7 +257,7 @@ const Index = () => {
                 Create your free account and start analyzing media with our AI detection engine.
               </p>
               <Button asChild size="lg" className="font-display text-sm tracking-wider px-10 h-13 glow-primary btn-press bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl">
-                <Link to="/auth?mode=signup">
+                <Link to="/dashboard">
                   Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
