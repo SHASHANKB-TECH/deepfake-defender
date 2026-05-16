@@ -35,8 +35,6 @@ const History = () => {
   useEffect(() => {
     // auth removed
   }, []);
-    return () => subscription.unsubscribe();
-  }, [navigate]);
 
   useEffect(() => {
     const fetchData = async () => {
