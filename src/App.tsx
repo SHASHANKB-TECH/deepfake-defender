@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,11 +12,18 @@ import Analyze from "./pages/Analyze";
 import Results from "./pages/Results";
 import History from "./pages/History";
 import NotFound from "./pages/NotFound";
+import { supabase } from "@/integrations/supabase/client";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) supabase.auth.signInAnonymously();
+    });
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
