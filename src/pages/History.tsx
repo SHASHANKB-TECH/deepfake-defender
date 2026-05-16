@@ -33,8 +33,8 @@ const History = () => {
   const [selected, setSelected] = useState<string[]>([]);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => { if (!session) navigate("/auth"); });
-    supabase.auth.getSession().then(({ data: { session } }) => { if (!session) navigate("/auth"); });
+    // auth removed
+  }, []);
     return () => subscription.unsubscribe();
   }, [navigate]);
 
