@@ -47,16 +47,14 @@ const Analyze = () => {
   const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      if (!session) navigate("/auth");
-      else setUser(session.user);
-    });
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) navigate("/auth");
-      else setUser(session.user);
+      if (session) setUser(session.user);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      if (session) setUser(session.user);
     });
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, []);
 
   const addFiles = useCallback((newFiles: File[]) => {
     const validFiles: File[] = [];

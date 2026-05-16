@@ -54,14 +54,9 @@ const Navbar = ({ showAuth, showDashboard, showAnalyze, onLogout }: NavbarProps)
           )}
 
           {showAuth && (
-            <>
-              <Link to="/auth" className="hidden md:inline text-sm text-muted-foreground hover:text-foreground transition-colors duration-300">
-                Log In
-              </Link>
-              <Button asChild size="sm" className="font-display text-xs tracking-[0.1em] btn-press bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg glow-primary">
-                <Link to="/auth?mode=signup">Get Started</Link>
-              </Button>
-            </>
+            <Button asChild size="sm" className="font-display text-xs tracking-[0.1em] btn-press bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg glow-primary">
+              <Link to="/dashboard">Get Started</Link>
+            </Button>
           )}
 
           {showDashboard && (

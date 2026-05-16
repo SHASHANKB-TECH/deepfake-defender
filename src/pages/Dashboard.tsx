@@ -62,16 +62,14 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      if (!session) navigate("/auth");
-      else setUser(session.user);
-    });
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) navigate("/auth");
-      else setUser(session.user);
+      setUser(session?.user ?? ({ id: "guest" } as User));
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? ({ id: "guest" } as User));
     });
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     if (!user) return;
