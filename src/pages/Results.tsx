@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import AtmosphericBackground from "@/components/AtmosphericBackground";
 import Navbar from "@/components/Navbar";
 import CountUp from "@/components/CountUp";
+import { generatePdfReport } from "@/lib/generatePdfReport";
 
 const MODULE_META = [
   { key: "facial_inconsistency", dbKey: "facial_artifact", icon: ScanLine, label: "Facial Inconsistency", education: "AI-generated faces often show unnatural skin texture, inconsistent lighting, or subtle warping around hairlines and ears." },
