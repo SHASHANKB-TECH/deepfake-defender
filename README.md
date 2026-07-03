@@ -1,73 +1,102 @@
-# Welcome to your Lovable project
+# Crown Shield
 
-## Project info
+AI-Powered Deepfake Detection — analyze images and videos across 8 forensic-grade modules with professional accuracy.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Overview
 
-## How can I edit this code?
+Crown Shield is a client-side web application for detecting AI-generated and manipulated media. It provides a high-end command-center dashboard, batch upload support, and detailed forensic-style analysis reports with downloadable PDFs.
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+- **Batch Upload** — analyze up to 10 files at once (JPEG, PNG, WEBP, MP4, MOV, AVI; max 20MB each)
+- **8 Forensic AI Modules** — facial inconsistency, GAN fingerprint detection, edge artifact analysis, temporal coherence (video), lighting inconsistency, expression symmetry, skin texture mapping, and metadata forensics
+- **Confidence Scoring** — 0-100% authenticity meter with color-coded risk levels
+- **Forensic Report Modal** — heatmap overlays, reasoning explanations, and module-by-module breakdown
+- **PDF Export** — generate downloadable A4 analysis reports with full findings
+- **Command Center Dashboard** — modern bento-grid layout with animated stats, activity feed, detection ring gauge, and threat distribution
+- **Analysis History** — search, filter, and review past scans
+- **Dark UI** — glassmorphism design with deep navy/violet tones and amber gold accents
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Tech Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- React 18 + TypeScript + Vite
+- Tailwind CSS + shadcn/ui
+- Supabase (auth + database)
+- Framer Motion (animations)
+- jsPDF (report generation)
+- React Query (server state)
 
-**Use your preferred IDE**
+## Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- [Node.js](https://nodejs.org/) (v18+ recommended)
+- [Bun](https://bun.sh/) or npm
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Setup
 
-Follow these steps:
+1. Clone the repository
+   ```sh
+   git clone <YOUR_GIT_URL>
+   cd <YOUR_PROJECT_NAME>
+   ```
 
+2. Install dependencies
+   ```sh
+   bun install
+   ```
+   Or with npm:
+   ```sh
+   npm install
+   ```
+
+3. Configure environment variables
+   
+   Create a `.env` file in the project root with your Supabase credentials:
+   ```
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+## Run Locally
+
+Start the development server:
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+bun run dev
+```
+Or with npm:
+```sh
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at `http://localhost:8080`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Build for Production
 
-**Use GitHub Codespaces**
+```sh
+bun run build
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Scripts
 
-## What technologies are used for this project?
+| Command | Description |
+|---------|-------------|
+| `bun run dev` | Start dev server (Vite) |
+| `bun run build` | Production build |
+| `bun run preview` | Preview production build |
+| `bun run test` | Run tests (Vitest) |
+| `bun run lint` | Run ESLint |
 
-This project is built with:
+## Project Structure
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+src/
+  components/      # UI components (shadcn + custom)
+  pages/           # Route pages (Index, Dashboard, Analyze, Results, History)
+  lib/             # Utilities (PDF generation, helpers)
+  integrations/    # Supabase client
+public/
+supabase/          # Database migrations & config
+```
 
-## How can I deploy this project?
+## License
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Private — all rights reserved.
